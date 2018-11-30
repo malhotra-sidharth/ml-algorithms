@@ -54,7 +54,8 @@ class Net(nn.Module):
 net = Net(input_size, hidden_size, num_classes)
 
 # enable gpu if available
-if torch.cuda.is_available():
+isGpu = torch.cuda.is_available()
+if isGpu:
   net.cuda()
 
 criterion = nn.CrossEntropyLoss()
@@ -64,7 +65,9 @@ for epoch in range(num_epochs):
   for i, (images, labels) in enumerate(train_loader):
     images = Variable(images.view(-1, 28*28))
     labels = Variable(labels)
-
+    if isGpu:
+        images = images.cuda()
+        labels = labels.cuda()
     optimizer.zero_grad()
     output = net(images)
     loss = criterion(output, labels)
@@ -79,6 +82,9 @@ correct = 0
 total = 0
 for images, labels in test_loader:
   images = Variable(images.view(-1, 28 * 28))
+  if isGpu:
+    images = images.cuda()
+    labels = labels.cuda()
   outputs = net(images)
   _, predicted = torch.max(outputs.data, 1)  # Choose the best class from the output: The class with the best score
   total += labels.size(0)  # Increment the total count
