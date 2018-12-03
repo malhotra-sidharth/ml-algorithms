@@ -27,3 +27,37 @@ class CropFace:
         x, y, w, h = faces[-1]
         img = img[y:y+h, x:x+w]
         cv2.imwrite(save_path + image, img)
+
+
+  def separate_classes_for_dataloader(self, images_dir, labels, image_list):
+    """
+    Compiles all images in class folders to be used directly by
+    PyTorch Dataloader
+    :param images_dir:
+    :param labels:
+    :param image_list:
+    :return:
+    """
+    # get all unique classes
+    classes = labels['emotion'].unique()
+    classes = set(s.lower() for s in classes)
+
+    # create folders
+    path = images_dir + '/' + 'dataset/'
+    if not os.path.exists(path):
+      os.mkdir(path)
+
+    for cl in classes:
+      path = images_dir + '/' + 'dataset/' + cl
+      if not os.path.exists(path):
+        os.mkdir(path)
+
+    # put images to their respective folders
+    for image in image_list:
+      cl = labels['emotion'][labels['image'] == image]
+      if not cl.empty:
+        cl = cl.values[-1]
+        path = images_dir + '/' + 'dataset/' + cl
+        img = cv2.imread(images_dir + '/'  + image, 0)
+        save_path = path + '/' + image
+        cv2.imwrite(save_path, img)
