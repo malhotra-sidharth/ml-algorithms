@@ -105,3 +105,6 @@ venv.bak/
 PyTorch/.idea/
 PyTorch/data/
 .idea/
+
+# data in face-expression-recognition
+facial-emotion-recognition/data/

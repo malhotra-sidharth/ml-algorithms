@@ -32,7 +32,7 @@ class CropFace:
   def separate_classes_for_dataloader(self, images_dir, labels, image_list):
     """
     Compiles all images in class folders to be used directly by
-    PyTorch Dataloader
+    PyTorch Dataloader. Also resizes the images to size 285x285
     :param images_dir:
     :param labels:
     :param image_list:
@@ -58,6 +58,8 @@ class CropFace:
       if not cl.empty:
         cl = cl.values[-1]
         path = images_dir + '/' + 'dataset/' + cl
-        img = cv2.imread(images_dir + '/'  + image, 0)
+        img_path = images_dir + '/'  + image
+        img = cv2.imread(img_path, 0)
+        new_img = cv2.resize(img, (285, 285))
         save_path = path + '/' + image
-        cv2.imwrite(save_path, img)
+        cv2.imwrite(save_path, new_img)
